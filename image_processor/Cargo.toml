@@ -1,0 +1,19 @@
+[package]
+name = "image_processor"
+version = "0.1.0"
+edition = "2021"
+description = "CLI application for loading PNG images, applying processing plugins, and saving results"
+license = "MIT"
+
+[[bin]]
+name = "image-processor"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+image = { workspace = true }
+libloading = { workspace = true }
+log = { workspace = true }
+env_logger = { workspace = true }
+thiserror = { workspace = true }

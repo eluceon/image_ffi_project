@@ -1,0 +1,7 @@
+/target
+**/.env
+*.so
+*.dylib
+.idea
+.PVS-Studio
+

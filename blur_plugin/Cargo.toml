@@ -1,0 +1,13 @@
+[package]
+name = "blur_plugin"
+version = "0.1.0"
+edition = "2021"
+description = "Blur image plugin — applies weighted box blur with configurable radius and iterations"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }

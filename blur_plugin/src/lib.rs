@@ -108,7 +108,7 @@ fn blur_pass(pixels: &mut [u8], original: &[u8], width: usize, height: usize, ra
             pixels[idx] = (sum_r / total_weight).round() as u8;
             pixels[idx + 1] = (sum_g / total_weight).round() as u8;
             pixels[idx + 2] = (sum_b / total_weight).round() as u8;
-            // Alpha channel is preserved from original
+            pixels[idx + 3] = original[idx + 3];
         }
     }
 }

@@ -50,8 +50,12 @@ fn run(cli: Cli) -> Result<(), AppError> {
     // SAFETY: rgba_data is a valid Vec<u8> of size width * height * 4.
     // The pointer remains valid for the duration of the unsafe block.
     // params is a valid CString (null-terminated, no interior nulls).
-    unsafe {
-        plugin.process(width, height, rgba_data.as_mut_ptr(), params.as_ptr());
+    let status = unsafe { plugin.process(width, height, rgba_data.as_mut_ptr(), params.as_ptr()) };
+    if status != 0 {
+        return Err(AppError::PluginExecutionFailed {
+            plugin: cli.plugin,
+            code: status,
+        });
     }
 
     log::info!("Saving processed image to {:?}", cli.output);

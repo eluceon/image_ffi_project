@@ -1,4 +1,4 @@
-use std::ffi::{c_char, c_uint, CStr};
+use std::ffi::{c_char, c_int, c_uint, CStr};
 
 use serde::Deserialize;
 
@@ -24,12 +24,12 @@ pub unsafe extern "C" fn process_image(
     height: c_uint,
     rgba_data: *mut u8,
     params: *const c_char,
-) {
+) -> c_int {
     let width = width as usize;
     let height = height as usize;
 
     if rgba_data.is_null() {
-        return;
+        return -1;
     }
 
     let params = if params.is_null() {
@@ -51,7 +51,7 @@ pub unsafe extern "C" fn process_image(
         .checked_mul(height)
         .and_then(|pixels| pixels.checked_mul(4))
     else {
-        return;
+        return -1;
     };
 
     // SAFETY: The caller guarantees rgba_data points to a valid buffer of size
@@ -64,6 +64,7 @@ pub unsafe extern "C" fn process_image(
     if params.vertical {
         mirror_vertical(pixels, width, height);
     }
+    0
 }
 
 fn mirror_horizontal(pixels: &mut [u8], width: usize, height: usize) {

@@ -29,6 +29,9 @@ pub enum AppError {
 
     #[error("Function 'process_image' not found in plugin: {0}")]
     PluginFnNotFound(#[source] Box<dyn std::error::Error + Send + Sync>),
+
+    #[error("Plugin '{plugin}' failed with exit code {code}")]
+    PluginExecutionFailed { plugin: String, code: i32 },
 }
 
 #[cfg(test)]

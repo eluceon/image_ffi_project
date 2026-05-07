@@ -1,12 +1,16 @@
-use std::ffi::{c_char, c_uint, CString};
+use std::ffi::{c_char, c_int, c_uint, CString};
 use std::path::{Path, PathBuf};
 
 use libloading::{Library, Symbol};
 
 use crate::error::AppError;
 
-type ProcessImageFn =
-    unsafe extern "C" fn(width: c_uint, height: c_uint, rgba_data: *mut u8, params: *const c_char);
+type ProcessImageFn = unsafe extern "C" fn(
+    width: c_uint,
+    height: c_uint,
+    rgba_data: *mut u8,
+    params: *const c_char,
+) -> c_int;
 
 pub struct Plugin {
     _lib: Library,
@@ -45,7 +49,7 @@ impl Plugin {
     }
 
     /// Call the plugin's process_image function.
-    /// The plugin modifies `rgba_data` in-place.
+    /// Returns the plugin's status code (0 = success, non-zero = error).
     ///
     /// # Safety
     ///
@@ -59,8 +63,8 @@ impl Plugin {
         height: u32,
         rgba_data: *mut u8,
         params: *const c_char,
-    ) {
-        (self.process_image)(width, height, rgba_data, params);
+    ) -> c_int {
+        (self.process_image)(width, height, rgba_data, params)
     }
 }
 

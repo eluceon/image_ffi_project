@@ -55,7 +55,12 @@ pub unsafe extern "C" fn process_image(
         })
     };
 
-    let len = width * height * 4;
+    let Some(len) = width
+        .checked_mul(height)
+        .and_then(|pixels| pixels.checked_mul(4))
+    else {
+        return;
+    };
 
     // SAFETY: The caller guarantees rgba_data points to a valid buffer of size
     // width * height * 4. We stay within bounds.

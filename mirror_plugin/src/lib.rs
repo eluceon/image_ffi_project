@@ -67,26 +67,25 @@ pub unsafe extern "C" fn process_image(
 }
 
 fn mirror_horizontal(pixels: &mut [u8], width: usize, height: usize) {
+    let row_bytes = width * 4;
     for y in 0..height {
+        let row_start = y * row_bytes;
         for x in 0..width / 2 {
-            let left = (y * width + x) * 4;
-            let right = (y * width + (width - 1 - x)) * 4;
-            for c in 0..4 {
-                pixels.swap(left + c, right + c);
-            }
+            let left = row_start + x * 4;
+            let right = row_start + (width - 1 - x) * 4;
+            let (front, back) = pixels.split_at_mut(right);
+            front[left..left + 4].swap_with_slice(&mut back[..4]);
         }
     }
 }
 
 fn mirror_vertical(pixels: &mut [u8], width: usize, height: usize) {
+    let row_bytes = width * 4;
     for y in 0..height / 2 {
-        for x in 0..width {
-            let top = (y * width + x) * 4;
-            let bottom = ((height - 1 - y) * width + x) * 4;
-            for c in 0..4 {
-                pixels.swap(top + c, bottom + c);
-            }
-        }
+        let top = y * row_bytes;
+        let bottom = (height - 1 - y) * row_bytes;
+        let (front, back) = pixels.split_at_mut(bottom);
+        front[top..top + row_bytes].swap_with_slice(&mut back[..row_bytes]);
     }
 }
 
